@@ -1,0 +1,149 @@
+
+@font-face {
+    font-family: Neou-Bold;
+    src: local(minimalDisplay), url('../resources/fonts/Neou-Bold.ttf') format('opentype');
+}
+@-webkit-keyframes rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to { 
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+
+#wrapper{
+	min-height: 100%;
+}
+#content_holder
+{
+	min-height: 100%;
+	margin:0;
+	padding:0;
+	display: block;
+	background-color: #EBE9E6;
+}
+#top_space
+{
+	height: 60px;
+}
+#title_holder
+{
+	width: 100%;
+	height: 350px;
+	display: table;
+	background-image:url('../resources/background_stars.jpg');
+	background-position: center top;
+	background-attachment: initial;
+	background-repeat: repeat;
+	vertical-align: middle;
+}
+#sequent_title
+{
+	background-color: transparent;
+	display: table-cell;
+	font-size: 94px; 
+	padding-left: 19px; 
+	letter-spacing: 19px; 
+	margin: 0 auto;
+	color: white;
+	vertical-align: middle;
+}
+
+#lower_content
+{
+	width: 70%;
+	min-height: 50%;
+	margin: 0 auto;
+	background-color: #EBE9E6;
+	padding-top:19px;
+	text-align:center;
+}
+#description
+{
+	margin: auto;
+	color: white;
+	padding: 20px;
+	width: 80%;
+	text-align: center;
+	min-height: 10%;
+	background-color: #48cfad;
+
+}
+#fb_login
+{
+	padding: 20px;
+	width: 70%;
+	min-height: 10%;
+	margin: auto;
+	background-color:#48cfad;
+}
+#tell_more
+{
+	margin: auto;
+	width: 20%;
+}
+#tell_more:hover
+{
+color:black;
+}
+#detailed_info
+{
+	display:none;
+	margin: auto;
+	color: white;
+	padding: 20px;
+	width: 80%;
+	text-align: left;
+	min-height: 10%;
+	background-color: orange;
+}
+.fb-login-button
+{
+	margin: auto;	
+}
+#group_select
+{
+	display:none;
+	margin: auto;
+	color: white;
+	padding: 20px;
+	width: 80%;
+	text-align: left;
+	min-height: 10%;
+	background-color: #48cfad;
+}
+
+#group_select_button
+{
+	text-align: center;
+	background-color:black;
+	color: white;
+	width: 10%;
+	margin:auto;
+}
+#group_select_button:hover
+{
+	color:orange;
+}
+#group_select_button:active
+{
+	background-color:#2D2C2D;
+}
+.footer
+{
+	color: #48cfad;
+	width: 90%;
+	padding-bottom:50px;
+	margin: 0 auto;
+	margin-top: 50px;
+	min-width:750px;
+}
+body
+{
+text-align: center;
+font-family: Neou-Bold;
+margin:0;
+padding:0;
+}

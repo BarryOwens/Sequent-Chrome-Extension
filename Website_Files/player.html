@@ -1,0 +1,355 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="./css/sequent-style.css">
+	<link rel="stylesheet" type="text/css" href="./css/player-style.css">
+	<link rel="stylesheet" href="./css/jquery-ui-sequent-mod.css">
+
+
+	<script src='./resources/jquery-2.1.0.js'></script>
+	<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
+	<script type="text/javascript" src='./resources/swfobject.js'></script>
+
+	<script>
+	
+	var links = new Array();
+	var videoDuration = 0;
+
+	$( document ).ready(function() {
+		var youtubes = JSON.parse(localStorage["SequentYoutubeLinks"]);
+		console.log("LocalStorage: "+youtubes[0]);
+		var i=0;
+		for(i=0; i<youtubes.length; i++)
+		{
+			var video_id = youtubes[i].split('v=')[1];
+			var ampersandPosition = video_id.indexOf('&');
+			if(ampersandPosition != -1) {
+			video_id = video_id.substring(0, ampersandPosition);
+			}
+			links[i]=video_id;
+		}
+	});
+	
+	// This is a global variable that the links will be added to in order they appear on screen
+	var trackList = new Array();
+	
+	// Get The link nanes by requesting data from gdata.youtube.com. Update the page once this completes
+	function getLinkNames()
+	{		
+		var i=0;
+		var j=0;
+		var titleHolder;
+		var videoId;
+		for(i=0; i<links.length; i++)
+		{
+		// TODO Seperate the links using a bar | this returns one long json will all info for each video. Get names from this.
+		// e.g https://gdata.youtube.com/feeds/api/videos?q=nVggsYu_E8w|1DwUYCrY1_0|peRS3KGNxoY|ulCTotEr7qM|?v=2&alt=json
+		titleHolder = 0;
+		var jqxhr = $.getJSON("https://gdata.youtube.com/feeds/api/videos/"+links[i]+"?v=2&alt=json",function( data ) {
+				titleHolder = data.entry.title.$t;
+				videoId = data.entry.id.$t;
+				videoId = videoId.substring(videoId.length-11,videoId.length);
+			}).always(function() {
+			// can do something callback here
+			});			
+			// Once JSON has completed 
+			jqxhr.complete(function() {		
+					// Update After Each Call				
+					$("#tracklist_container").append(
+							"<div class='track_info' id='trackID"+j+"' onclick=\"handle_select_click_event(this,'"+videoId+"',"+j+");\">"+
+							"	<div class='track_image'>"+
+							"		<img style='-webkit-user-select: none' src='http://img.youtube.com/vi/"+videoId+"/default.jpg'>"+
+							"	</div>"+
+							"	<div class='track_text'>"+					
+									titleHolder+
+							"	</div> "+
+							"	<div class='x_button' id='removeLink"+j+"' onclick=\"handle_remove_click_event(this,'"+videoId+"',"+j+");\">  "+
+							"		X "+
+							"	</div>"+
+							"</div>"					
+					);					
+				trackList[j]=videoId;				
+				j++;
+			});// end jqxhr complete
+		}
+	} // End getLinkNames
+	
+	// Custom function to remove value when passed the value
+	Array.prototype.remove = function(value) {
+	var idx = this.indexOf(value);
+	if (idx != -1) {
+			return this.splice(idx, 1); // The second parameter is the number of elements to remove.
+		}
+	return false;
+	}
+	
+	// Event Handler For Removing Lined up Tracks, Must Change to Remove Values not Positions
+	function handle_remove_click_event(obj, val, id)
+	{
+		// First remove the visual from the tracklist
+		var element = document.getElementById("trackID"+id);		
+		element.parentNode.removeChild(element); 
+		// Then call custom function to remove from array when passed a value
+		trackList.remove(val); 
+		var e = window.event;
+			e.cancelBubble = true;
+		if (e.stopPropagation) e.stopPropagation();
+	}
+	
+	// Event Handler For selecting what track to play
+	function handle_select_click_event(obj, val, id)
+	{
+		// First remove the visual from the tracklist
+		// load the value into the player
+		linkNumber=id;
+		ytplayer.loadVideoById(val,1);
+		updateTrackText(val);	
+	}
+	
+	// Load video links and update tracklist
+	$( document ).ready(function() {
+		getLinkNames();
+	});
+	
+	var seekValue = 0;
+	// On mouse click, get slider value. pass to update video position
+	$( document ).ready(function() {
+		document.getElementById('seekbar').onclick = function() {
+		seekValue = document.getElementById('track_pos').val;
+		ytVidSeekTo(seekValue);
+		}
+	});
+	
+	// Set the Slider to increment by .2
+	$( document ).ready(function() {
+		$("#seekbar").slider(
+			  {
+				  min: 0,
+				  max: 100,
+				  step: .2,
+				  change: function(event, ui){
+						document.getElementById('track_pos').val = ui.value;
+					}
+			  });
+			  
+		$("#update").click(function () {
+			$("#seekbar").slider("option", "value", $("#seekTo").val());
+		}); 
+	});
+	
+	var linkNumber = 0;	
+	var videoPlaying = false;
+	
+	// Change video time to the selected time on the slider
+	function ytVidSeekTo(percentage)
+	{
+		  ytplayer = document.getElementById("ytplayer");
+		  console.log('trying to seek to' +(videoDuration*percentage)/100);
+		  ytplayer.seekTo((videoDuration*percentage)/100, true);	
+	}
+	
+	// Function to change the track details after loading each track
+	function updateTrackText(val)
+	{
+		var trackDetails = $.getJSON("https://gdata.youtube.com/feeds/api/videos/"+val+"?v=2&alt=json",function( data ) {
+				var trackPlaying = data.entry.title.$t;
+				$("#track_details").html(trackPlaying);
+				});
+	}
+	
+	// Function that is called every second. Gets the current time divides by duration and updates slider value
+	function updateTime()
+		{
+			if(videoPlaying == true)
+			{
+				ytplayer = document.getElementById("ytplayer");
+				var currTime = ytplayer.getCurrentTime();
+				var percentComplete = (currTime/videoDuration)*100;
+				$("#seekbar").slider("option", "value",percentComplete);
+			}
+		}
+	$( document ).ready(function() {
+		window.setInterval(function(){
+			/// call the update time function here
+			updateTime();
+		}, 500);
+		
+	});
+	
+	// Function that is called when the player is ready to load videos, set up here. 
+	function onYouTubePlayerReady(playerId) {
+      ytplayer = document.getElementById("ytplayer"); // Do a check to see if playerID = typlayer. replace it?
+	  // Load the first link
+	  ytplayer.loadVideoById(trackList[linkNumber], 0);
+	  updateTrackText(trackList[linkNumber]);
+
+	  linkNumber++;
+	  ytplayer.addEventListener("onStateChange" ,"onytplayerStateChange");
+    }
+	
+	// Called if the player state has changed, used to play the next link 
+	function onytplayerStateChange(state) {
+		if(state==0)
+		{	
+			videoPlaying = false;
+			// Set the player to load
+			ytplayer.loadVideoById(trackList[linkNumber], 1);
+			updateTrackText(trackList[linkNumber]);			
+			linkNumber++;
+		}
+		if(state==1)
+		{	
+			// Set the player to load
+			console.log("Starting to play");
+			$('#pause_button').css('background-image','url(./resources/pause.png)');
+			$('#pause_button').hover( function () { 
+						$(this).css('background-image','url(./resources/play_hover.png)')
+				}, function() {
+						$(this).css('background-image','url(./resources/play.png)')				
+				});
+				
+			videoDuration = ytplayer.getDuration();
+			console.log("Duration: " +videoDuration);
+			videoPlaying = true;
+		}
+	}
+// Button click handlers
+$( document ).ready(function() {
+
+		$( "#pause_button" ).click(function(){
+			// First find if player is playing. unstarted(-1), ended (0), playing (1), paused (2), buffering (3), video cued (5).
+			ytplayer = document.getElementById("ytplayer"); 
+			var state = ytplayer.getPlayerState();
+			if( state==1 || state==3 )
+			{
+				pause();
+				$('#pause_button').css('background-image','url(./resources/play.png)');
+				$('#pause_button').hover( function () { 
+						$(this).css('background-image','url(./resources/play_hover.png)')
+				}, function() {
+						$(this).css('background-image','url(./resources/play.png)')				
+				});
+
+			}
+			else
+			{
+				play();
+				$('#pause_button').css('background-image','url(./resources/pause.png)');
+				$('#pause_button').hover( function () { 
+						$(this).css('background-image','url(./resources/pause_hover.png)')
+				}, function() {
+						$(this).css('background-image','url(./resources/pause.png)')				
+				});
+			}
+		});
+		$( "#forward_button" ).click(function(){
+			// First find if player is playing. unstarted(-1), ended (0), playing (1), paused (2), buffering (3), video cued (5).
+			ytplayer = document.getElementById("ytplayer"); 
+			linkNumber++;
+			ytplayer.loadVideoById(trackList[linkNumber], 0);
+			updateTrackText(trackList[linkNumber]);
+		});
+});
+	</script>
+</head>
+<body>
+
+<!--[if lt IE 8]>
+            <p >You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+
+
+<div id='wrapper'>
+                <div id='main'>
+				</div>
+						<div id='content_holder'>
+                                    <div id='sequent_title_holder'>
+										<div id='sequent_title_small'>
+										<span style="background-color: #000000">SEQUENT</span>
+										</div>										
+                                    </div>  								
+                                    <div id='player_content'>
+										<div id='player_wrapper'>
+											<div id='track_playing'>
+													<!--put slider here -->
+													<div id='playing_text'>
+														<div id='track_details'>
+														No Tracks Found
+   
+														</div>
+													</div>
+													<div id='seekbar'>
+													
+													</div>
+													<div id='track_pos'>
+													
+													</div>
+													<div id='track_length'>
+													
+													</div>
+													<script>
+														$( "#seekbar" ).slider({ animate: "fast" });
+													</script>
+											</div>
+											<div id='player_controls'>												
+												<div id='back_button' class='player_button'>												
+												</div>
+												<div id='pause_button' class='player_button'>												
+												</div>
+												<div id='forward_button' class='player_button'>
+												</div>												
+											</div>
+										</div>
+										
+										<!-- This div gets populated with the images and titles of the youtube links -->
+										<div id='tracklist_container'>	
+										</div>				
+										<div class='footer'>	
+										Thanks for trying. I'm still working on all the bugs. If you have any ideas, bug reports or comments contact me <a href="comments.html"> here </a>
+										</div>		
+										
+										<div id='video_visual'>
+
+											<div id="ytplayer">
+											<p>You will need Flash 8 or better to view this content.</p>
+		
+											</div>
+										</div>
+									</div>  
+                        </div>		
+                </div> 
+		
+</div>
+<script type="text/javascript">
+	var params = { allowScriptAccess: "always" };
+	swfobject.embedSWF("http://www.youtube.com/apiplayer?enablejsapi=1&playerapiid=ytplayer", "ytplayer", "425", "365", "8", null, null, params);
+</script>
+
+<script type="text/javascript">
+	var ytplater= document.getElementById("ytplayer");
+	function play() {
+	  if (ytplayer) {
+		ytplayer.playVideo();
+	  }
+	}
+
+	function pause() {
+	  if (ytplayer) {
+		ytplayer.pauseVideo();
+	  }
+	}
+
+	function stop() {
+	  if (ytplayer) {
+		ytplayer.stopVideo();
+	  }
+	}
+	function loadNewVideo(id, startSeconds) {
+	  if (ytplayer) {
+		ytplayer.loadVideoById(id, startSeconds);
+	  }
+	}
+	
+</script>			
+</body>
+</html>

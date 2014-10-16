@@ -1,0 +1,163 @@
+#player
+{
+	width: 80%;
+	min-height: 50%;
+	margin: 0 auto;
+	background-color: black;
+	padding-top:19px;
+}
+#sequent_title_holder
+{
+	width: 100%;
+	height: 50px;
+	display: table;
+	background-color:black;
+	background-image:('../resources/testDots.png');
+	background-position: center top;
+	background-attachment: initial;
+	background-repeat: repeat;
+	vertical-align: middle;
+}
+#sequent_title_small
+{
+	background-color: transparent;
+	display: table-cell;
+	font-size: 20px; 
+	padding-left: 50px; 
+	letter-spacing: 19px; 
+	margin: 0 auto;
+	color: white;
+	text-align: left;
+	vertical-align: middle;
+}
+#player_content
+{
+	width: 80%;
+	min-height: 50%;
+	min-width: 955px;
+	margin: 0 auto;
+	background-color: #2D2C2C;
+	text-align: left;
+}
+#player_wrapper
+{
+	width: 100%;
+	height: 75px;
+	color: black;
+	min-width:750px;
+	text-align: left;
+	background-color: #ffffff;
+}
+#track_playing
+{
+	width: 60%;
+	height: 100%;
+	color: black;
+	text-align: left;
+	background-color: #48cfad;
+	float: left;
+}
+#player_controls
+{
+	width: 40%;
+	height: 100%;
+	color: black;
+	text-align: left;
+	overflow: hidden;
+	background-color: #48cfad;
+	float: left;
+}
+#track_details
+{
+	display: inline-block;
+	padding: 10;
+}
+#track_pos
+{
+	float:left;
+}
+#track_length
+{
+	float:left;
+}
+#back_button
+{
+	margin-left:15%;
+	background-image:url("../resources/backward_track.png");
+	
+}
+#back_button:hover
+{
+	background-image:url("../resources/backward_track_hover.png");
+}
+#pause_button
+{
+	background-image:url("../resources/pause.png"); 
+}
+#pause_button:hover
+{
+	background-image:url("../resources/pause_hover.png");
+}
+#forward_button
+{
+	background-image:url("../resources/forward_track.png");
+}
+#forward_button:hover
+{
+	background-image:url("../resources/forward_track_hover.png"); !important;
+}
+#tracklist_container
+{
+	width: 90%;
+	padding-bottom:50px;
+	margin: 0 auto;
+	margin-top: 50px;
+	min-width:750px;
+}
+.track_info
+{
+	width: 100%;
+	background-color: black;
+	color: #48cfad;
+	height: 90px;
+	margin-bottom: 10px;
+	overflow:hidden;
+	
+}
+.track_image
+{
+	width: 120px;
+	height: 90px;
+	float: left;
+}
+.track_text
+{
+	float:left;
+	margin:20px;
+}
+.x_button
+{
+	float:right;
+	margin-top:10px;
+	margin-right:10px;
+}
+.player_button
+{
+	float: left;
+	height: 100%;
+	width: 70px;
+	font-size: 70px; 
+	margin-right:10%;
+	background-size:70px 70px;
+	background-repeat:no-repeat;
+	}
+#video_visual
+{
+ 
+    position: absolute;
+    left: -9999px;
+}
+a {
+  color: white;
+  text-decoration: none; /* no underline */
+}

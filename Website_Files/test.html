@@ -1,0 +1,38 @@
+//Minimalist sample html
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="./css/sequent-style.css">
+	<link rel="stylesheet" type="text/css" href="./css/player-style.css">
+	<link rel="stylesheet" type="text/css" href="./css/nprogress.css">
+
+	<script src='./resources/jquery-2.1.0.js'></script>
+	<script type="text/javascript" src='./resources/swfobject.js'></script>
+	<script type="text/javascript" src='./resources/nprogress.js'></script>
+</head>
+<body>
+    <div>Some Content Here</div>
+    <hr>
+
+    <div id="myDiv" role='bar' style="width: 70%;">
+        <table style="width: 100%">
+            <tr>
+                <td>
+                    Something
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <p><input type='button' id='b-1' value="Start"></input></p>
+    <p><input type='button' id='b-0' value="Done"></input></p>
+
+    <script type="text/javascript">
+        NProgress.configure({
+            target: '#myDiv'
+        });
+
+        $("#b-1").click(function() { NProgress.start(); });
+                $("#b-0").click(function() { NProgress.done(); });
+    </script>
+</body>
+</html>
