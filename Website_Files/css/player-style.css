@@ -122,7 +122,9 @@
 	height: 90px;
 	margin-bottom: 10px;
 	overflow:hidden;
-	
+	cursor: pointer;
+cursor: hand;
+
 }
 .track_image
 {
