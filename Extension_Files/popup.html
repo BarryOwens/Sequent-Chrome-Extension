@@ -1,83 +1,25 @@
 <!doctype html>
 <html>
   <head>
-  <link href='http://fonts.googleapis.com/css?family=Pontano+Sans' rel='stylesheet' type='text/css'>
-
-    <title>Your Portfolio</title>
+    <link href='http://fonts.googleapis.com/css?family=Pontano+Sans' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="popup.css">
+    <title>Sequent</title>
     <style>
-      body {
-        min-width:357px;
-        overflow-x:hidden;
-      }
-
-      img {
-        margin:5px;
-        border:2px solid black;
-        vertical-align:middle;
-        width:75px;
-        height:75px;
-      }
-	  	
-	.button {
-	   border-top: 1px solid #14547a;
-	   background: #173eeb;
-	   background: -webkit-gradient(linear, left top, left bottom, from(#0027b5), to(#173eeb));
-	   background: -webkit-linear-gradient(top, #0027b5, #173eeb);
-	   background: -moz-linear-gradient(top, #0027b5, #173eeb);
-	   background: -ms-linear-gradient(top, #0027b5, #173eeb);
-	   background: -o-linear-gradient(top, #0027b5, #173eeb);
-	   padding: 15.5px 31px;
-	   -webkit-border-radius: 5px;
-	   -moz-border-radius: 5px;
-	   border-radius: 5px;
-	   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
-	   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
-	   box-shadow: rgba(0,0,0,1) 0 1px 0;
-	   text-shadow: rgba(0,0,0,.4) 0 1px 0;
-	   color: #c9c9d1;
-	   font-size: 17px;
-	   text-decoration: none;
-	   vertical-align: middle;
-	   }
-	.button:hover {
-	   border-top-color: #104be0;
-	   background: #104be0;
-	   color: #d1d1d1;
-	   }
-	.button:active {
-	   border-top-color: #2d42fa;
-	   background: #2d42fa;
-	   }
-	
     </style>
-
     <!-- JavaScript and HTML must be in separate files for security. -->
-	<script src="jquery-1.7.2.js"> </script>
-	<script src="createPlaylistListener.js"></script>
-	
+    <script src="jquery-1.7.2.js"> </script>
+    <script src="createPlaylistListener.js"></script>
   </head>
-  <body style="font-family: 'Pontano Sans', sans-serif; font-size: 17px; vertical-align: middle;">
-	Stock Watcher
-	<hr>
-	<div id="pages">
-		
-		<div id="createPlaylist" class="button" > Create Playlist </div>
-		<br>
-<div id="urlContents">
-</div>		
-		
-	
-
-
-	</div>
-	
-	</div>
-	<div id="Content">
-	
-		
-
-	</div>
-	
-	
+  <body>
+    <div id='wrapper'>
+      <div id='sequent_title'>
+        <span>SEQUENT</span>
+      </div>
+      <br>
+      <div id='button_wrapper'>
+        <div id="createPlaylist" class="button" >Create Playlist </div>
+        <br>
+      </div>
+    </div>
   </body>
 </html>

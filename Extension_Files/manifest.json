@@ -18,7 +18,8 @@
 	"playerBackground.js"
 	],
   "permissions": [
-    "tabs", "http://*/*", "https://*/*"
+    "tabs", "http://*/*", "https://*/*",
+	"storage"
   ]
 
 }

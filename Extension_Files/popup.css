@@ -1,0 +1,64 @@
+body {
+min-width:300px;
+overflow-x:hidden;
+background-image:url(./images/background_stars.jpg);
+font-family:Neou-Bold;
+}
+
+.button {
+border-top:1px solid #48cfad;
+background:#48cfad;
+-webkit-border-radius:0;
+-moz-border-radius:0;
+border-radius:0;
+cursor: hand; 
+-webkit-box-shadow:rgba(0,0,0,1) 0 1px 0;
+-moz-box-shadow:rgba(0,0,0,1) 0 1px 0;
+box-shadow:rgba(0,0,0,1) 0 1px 0;
+text-shadow:rgba(0,0,0,.4) 0 1px 0;
+color:#FFF;
+font-size:12px;
+font-family:Neou-Bold;
+text-decoration:none;
+text-align:center;
+vertical-align:middle;
+width:150px;
+padding:7px 10px;
+}
+
+.button:hover {
+border-top-color:#3FB597;
+background:#3FB597;
+color:#FFF;
+cursor: pointer;
+cursor: hand;
+}
+
+.button:active {
+border-top-color:#246F5C;
+background:#246F5C;
+color:#000;
+}
+
+#sequent_title {
+background-color:transparent;
+letter-spacing:19px;
+color:#FFF;
+vertical-align:middle;
+font-size:19px;
+margin-left:auto;
+margin-right:auto;
+width:70%;
+}
+
+#button_wrapper {
+margin-left:auto;
+margin-right:auto;
+width:70%;
+padding-left:20px;
+}
+
+@font-face {
+font-family:Neou-Bold;
+src:local(minimalDisplay), url(../fonts/Neou-Bold.ttf) format(opentype);
+}
