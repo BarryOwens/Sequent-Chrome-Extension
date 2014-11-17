@@ -11,12 +11,6 @@
 	<script type="text/javascript" src='./resources/player.js'></script>
 </head>
 <body>
-
-<!--[if lt IE 8]>
-            <p >You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-<![endif]-->
-
-
 <div id='wrapper'>
                 <div id='main'>
 				</div>
@@ -31,10 +25,9 @@
 											<div id='track_playing'>
 													<!--put slider here -->
 													<div id='playing_text'>
-														<div id='track_details'>
-														No Tracks Found
-   
-														</div>
+														<div id='track_details'>				 
+														<img src="./resources/loading_image_spike_ball.gif" alt="Loading Icon" style="width:20;height:20">
+														</div>	
 													</div>
 													<div id='seekbar'>
 													
@@ -67,10 +60,8 @@
 										</div>		
 										
 										<div id='video_visual'>
-
-											<div id="ytplayer">
-											<p>You will need Flash 8 or better to view this content.</p>
-		
+											<!-- This is where XHTML will output the player, hidden by default -->
+											<div id="ytplayer">		
 											</div>
 										</div>
 									</div>  
@@ -82,32 +73,6 @@
 	var params = { allowScriptAccess: "always" };
 	swfobject.embedSWF("http://www.youtube.com/apiplayer?enablejsapi=1&playerapiid=ytplayer", "ytplayer", "425", "365", "8", null, null, params);
 </script>
-
-<script type="text/javascript">
-	var ytplater= document.getElementById("ytplayer");
-	function play() {
-	  if (ytplayer) {
-		ytplayer.playVideo();
-	  }
-	}
-
-	function pause() {
-	  if (ytplayer) {
-		ytplayer.pauseVideo();
-	  }
-	}
-
-	function stop() {
-	  if (ytplayer) {
-		ytplayer.stopVideo();
-	  }
-	}
-	function loadNewVideo(id, startSeconds) {
-	  if (ytplayer) {
-		ytplayer.loadVideoById(id, startSeconds);
-	  }
-	}
-	
-</script>			
+		
 </body>
 </html>

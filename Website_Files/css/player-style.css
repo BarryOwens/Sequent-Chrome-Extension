@@ -123,8 +123,7 @@
 	margin-bottom: 10px;
 	overflow:hidden;
 	cursor: pointer;
-cursor: hand;
-
+	cursor: hand;
 }
 .track_image
 {
@@ -152,6 +151,8 @@ cursor: hand;
 	margin-right:10%;
 	background-size:70px 70px;
 	background-repeat:no-repeat;
+	background-position-y: 2px;
+	cursor: pointer;
 	}
 #video_visual
 {

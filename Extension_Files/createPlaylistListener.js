@@ -1,7 +1,6 @@
 function clickPlaylistCreate(e) {  
 if(e.target.id=="createPlaylist")
 	{
-		alert(' im in');
 		var localURLs = new Array();
 		// The Below code searches the page for YouTube links
 		chrome.tabs.executeScript(null,  {code:""
@@ -26,15 +25,21 @@ if(e.target.id=="createPlaylist")
 		+"}"
 		+"videoIDs;"
 		}, function(result){
-		alert(' this is the result ' +result[0]);		
-			// Create a new tab where player will use links found
-			chrome.tabs.create({'url':"http://www.barryowens.net/sequent/player.html?LinksFound="+result[0]}, function(tab)
+			if(result[0].length == 0)
 			{
-				chrome.tabs.sendRequest(tab.id, {
-										'action' : 'TransferURLS',										
-										});
-			});
-		});	
+				$("#error_text").show();
+			}
+			else {
+				//alert(' These are the links found ' +result[0]);		
+				// Create a new tab where player will use links found
+				chrome.tabs.create({'url':"http://www.barryowens.net/sequent/player.html?LinksFound="+result[0]}, function(tab)
+				{
+					chrome.tabs.sendRequest(tab.id, {
+											'action' : 'TransferURLS',										
+											});
+				});// End crome.tabs.create
+		    } // End else
+		});	// end function(result)
 	}	
 }
 

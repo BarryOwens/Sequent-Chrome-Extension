@@ -49,6 +49,7 @@ font-size:19px;
 margin-left:auto;
 margin-right:auto;
 width:70%;
+text-align:center;
 }
 
 #button_wrapper {
@@ -56,6 +57,14 @@ margin-left:auto;
 margin-right:auto;
 width:70%;
 padding-left:20px;
+}
+#error_text {
+color:red;
+margin-left:auto;
+margin-right:auto;
+width:70%;
+padding-left:20px;
+display:none;
 }
 
 @font-face {
