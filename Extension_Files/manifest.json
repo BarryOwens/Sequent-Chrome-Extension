@@ -1,6 +1,6 @@
 {
   "name": "Sequent",
-  "version": "0.0.0.3",
+  "version": "0.0.0.4",
   "manifest_version": 2,
   "description": "Creates a YouTube playlist from any webpage you a viewing",
   "browser_action": {
