@@ -6,7 +6,9 @@ if(e.target.id=="createPlaylist")
 		chrome.tabs.executeScript(null,  {code:""
 		+"var bodyContent = document.body.innerHTML; "
 		+"var count = 0;"
+		+"var regResult = false;"
 		+"var videoIDs = new Array(); "
+		+"var ytIDPattern = new RegExp('^(www\\\\.youtube\\\\\.com/watch\\\\?v\\\\=)([a-zA-Z0-9-_]{11})$');"
 		+"doSearch(bodyContent,'');"
 		+"function doSearch(searchString, previousLink)"
 		+"{ "
@@ -14,8 +16,10 @@ if(e.target.id=="createPlaylist")
 				+"if(linkPos!=-1) "
 				+"{"
 					+"var linkFound = searchString.substring(linkPos,linkPos+35);"
-					+"if(linkFound != previousLink)"
+					+"regResult = ytIDPattern.test(linkFound);"
+					+"if(linkFound != previousLink && regResult==true)"
 					+"{"
+						+"console.log('pushed '+linkFound);"
 						+"videoIDs.push(linkFound);"
 					+"}"					
 					+"count++;"
@@ -25,7 +29,7 @@ if(e.target.id=="createPlaylist")
 		+"}"
 		+"videoIDs;"
 		}, function(result){
-			if(result[0].length == 0)
+			if(result[0].length == 0 || result == null)
 			{
 				$("#error_text").show();
 			}
