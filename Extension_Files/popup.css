@@ -51,6 +51,12 @@ margin-right:auto;
 width:70%;
 text-align:center;
 }
+#how_to_text{
+color:white;
+word-wrap:normal;
+text-align:center;
+display:none;
+}
 
 #button_wrapper {
 margin-left:auto;
