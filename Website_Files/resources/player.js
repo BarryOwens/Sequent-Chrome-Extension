@@ -1,8 +1,26 @@
-var links = [];
+var linksPassed = [];
 var videoDuration = 0;
 // This is a global variable that the links will be added to in order they appear on screen
 var trackList = [];
 
+// Youtube API Stuf
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+var player;
+//// KKK Check typlayer inside 
+function onYouTubeIframeAPIReady() {
+	player = new YT.Player('ytplayer', {
+	  height: '300',
+	  width: '300',
+	  videoId: 'M7lc1UVf-VE',
+	  events: {
+		'onReady': onYouTubePlayerReady,
+		'onStateChange': onplayerStateChange
+	  }
+});
+}
 // Pre-load some images 
 PlayButton =  new Image(70, 70);
 PlayButton.src = "./resources/play.png";
@@ -31,61 +49,65 @@ function parseYouTubeIDsFromLinks(youTubeLinks) {
     var i = 0;
     var ampersandPosition, videoID; // The character '&' in the string and found  unique ID
     for (i = 0; i < youTubeLinks.length; i++) {
-        videoID = youTubeLinks[i].split('v=')[1];
-        ampersandPosition = videoID.indexOf('&');
-        // If '&' exists in the string
-        if (ampersandPosition !== -1) {
-            videoID = videoID.substring(0, ampersandPosition);
-        }
-        links[i] = videoID;
+        videoID = youTubeLinks[i];
+        linksPassed[i] = videoID;
     }
 }
 // Function to parse out the URL and get the links
 function getLinksArrayFromURL() {
-	// TODO Validate input
     var passedParameters = window.location.search.substring(1);
     // Remove the parameter name, this can be adjusted in future to allow other parameters
     passedParameters = passedParameters.replace("LinksFound=", '');
     var passedParametersArray = passedParameters.split(',');
-    //alert("Found parameters:" + passedParameters);
-    console.log(passedParametersArray);
     return passedParametersArray;
 }
 
-// Get The link nanes by requesting data from gdata.youtube.com. Update the page once this completes
+// Get The link nanes by requesting data from Youtube Data Api. Update the page once this completes
 function getLinkNames() {
     var i = 0, j = 0;
     var titleHolder, videoId;
+	var tracksLoaded = [];
     var jqxhr;
-    for (i = 0; i < links.length; i++) {
-        // TODO Seperate the links using a bar | this returns one long json will all info for each video. Get names from this.
-        // e.g https://gdata.youtube.com/feeds/api/videos?q=nVggsYu_E8w|1DwUYCrY1_0|peRS3KGNxoY|ulCTotEr7qM|?v=2&alt=json
-        jqxhr = $.getJSON("https://gdata.youtube.com/feeds/api/videos/" + links[i] + "?v=2&alt=json", function(data) {
-            titleHolder = data.entry.title.$t;
-            videoId = data.entry.id.$t;
-            videoId = videoId.substring(videoId.length - 11, videoId.length);
+    for (i = 0; i < linksPassed.length; i++) {
+        // Possible Future work: Seperate the links using a bar | this returns one long json will all info for each video. Get names from this.
+        jqxhr = $.getJSON("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + linksPassed[i] + "&key=AIzaSyB4ZjzqWb3dZeU7-5Q1H5bX9gDvZTihxqI", function(data) {
+            titleHolder = data.items[0].snippet.title;
+			titleHolder = titleHolder.substring(0,50); // Set Max text size
+            videoId = data.items[0].id;
+            //videoId = videoId.substring(videoId.length - 11, videoId.length); //
         });
-    // Once JSON has completed 
-    jqxhr.complete(function() {
-    // Update After Each Call
-    $("#tracklist_container").append(
-                    "<div class='track_info' id='trackID" + j + "' onclick=\"handle_select_click_event(this,'" + videoId + "'," + j + ");\">" +
-                    "    <div class='track_image'>" +
-                    "        <img style='-webkit-user-select: none' src='http://img.youtube.com/vi/" + videoId + "/default.jpg'>" +
-                    "    </div>" +
-                    "    <div class='track_text'>" +
-                    titleHolder +
-                    "    </div> " +
-                    "    <div class='x_button' id='removeLink" + j + "' onclick=\"handle_remove_click_event(this,'" + videoId + "'," + j + ");\">  " +
-                    "        X " +
-                    "    </div>" +
-                    "</div>"
-                );
-                trackList[j] = videoId;
-                j++;
-            }); // end jqxhr complete
-        }
-    } // End getLinkNames
+		// Once JSON has completed 
+		jqxhr.complete(function() {
+		if (tracksLoaded.indexOf(videoId) < 0 && typeof videoId != 'undefined' )
+		{
+		tracksLoaded[j] = videoId;
+		// Update After Each Call
+		$("#tracklist_container").append(
+						"<div class='track_info' id='trackID" + j + "' onclick=\"handle_select_click_event(this,'" + videoId + "'," + j + ");\">" +
+						"    <div class='track_image'>" +
+						"        <img style='-webkit-user-select: none' src='http://img.youtube.com/vi/" + videoId + "/default.jpg'>" +
+						"    </div>" +
+						"    <div class='track_text'>" +
+						titleHolder +
+						"    </div> " +
+						"    <div class='left_col'> " +			
+						"    	<div class='x_button' id='removeLink" + j + "' onclick=\"handle_remove_click_event(this,'" + videoId + "'," + j + ");\">  " +
+						"        <img src='./resources/x_icon.png'> " +
+						"    	</div>" +
+						"    	<div class='ytLink' onclick='handle_ytLink_click_event(this)'> " +	
+						"        <A HREF='http://www.youtube.com/watch?v="+ videoId + "' target='_blank'> <img src='./resources/link.png'> </a>  " +
+						"     	</div>" +
+						"    </div>" +
+						"           " +
+						"           " +		
+						"</div>"
+					);
+					trackList[j] = videoId;
+					j++;
+		} // End track loaded if
+		}); // End jqxhr complete
+    } // End For Loop
+} // End getLinkNames
 
 // Custom function to remove value when passed the value
 Array.prototype.remove = function(value) {
@@ -107,13 +129,19 @@ function handle_remove_click_event(obj, val, id) {
     e.cancelBubble = true;
     if (e.stopPropagation) e.stopPropagation();
 }
+function handle_ytLink_click_event(obj) {
+	// do the 
+	var e = window.event;
+    e.cancelBubble = true;
+    if (e.stopPropagation) e.stopPropagation();
+}
+
 
 // Event Handler For selecting what track to play
 function handle_select_click_event(obj, val, id) {
-    // First remove the visual from the tracklist
     // load the value into the player
     linkNumber = id;
-    ytplayer.loadVideoById(val, 1);
+    player.loadVideoById(val, 0,'large');
     updateTrackText(val);
 }
 
@@ -156,55 +184,53 @@ var videoPlaying = false;
 
 // Change video time to the selected time on the slider
 function ytVidSeekTo(percentage) {
-    ytplayer = document.getElementById("ytplayer");
-    console.log('trying to seek to' + (videoDuration * percentage) / 100);
-    ytplayer.seekTo((videoDuration * percentage) / 100, true);
+    player.seekTo((videoDuration * percentage) / 100, true);
 	progressBarClicked=false;
 }
 
 // Function to change the track details after loading each track
 function updateTrackText(val) {
-    var trackDetails = $.getJSON("https://gdata.youtube.com/feeds/api/videos/" + val + "?v=2&alt=json", function(data) {
-        var trackPlaying = data.entry.title.$t;
-        $("#track_details").html(trackPlaying);
+    var trackDetails = $.getJSON("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + val + "&key=AIzaSyB4ZjzqWb3dZeU7-5Q1H5bX9gDvZTihxqI", function(data) {
+        var trackPlaying = data.items[0].snippet.title;
+        $("#track_details").html(trackPlaying.substring(0,50));
+		document.title = trackPlaying.substring(0,50);
+		
     });
 }
 
 // Function that is called every second. Gets the current time divides by duration and updates slider value
 function updateTime() {
     if (videoPlaying == true) {
-        ytplayer = document.getElementById("ytplayer");
-        var currTime = ytplayer.getCurrentTime();
+        var currTime = player.getCurrentTime();
         var percentComplete = (currTime / videoDuration) * 100;
         $("#seekbar").slider("option", "value", percentComplete);
     }
 }
 $(document).ready(function() {
     window.setInterval(function() {
-        /// call the update time function here
+        // call the update time function here
         updateTime();
     }, 500);
 
 });
 
 // Function that is called when the player is ready to load videos, set up here. 
-function onYouTubePlayerReady(playerId) {
-    ytplayer = document.getElementById("ytplayer"); // Do a check to see if playerID = typlayer. replace it?
+function onYouTubePlayerReady(event) {
     // Load the first link
-    ytplayer.loadVideoById(trackList[linkNumber], 0);
+    event.target.loadVideoById(trackList[linkNumber], 0,'large');
     updateTrackText(trackList[linkNumber]);
-    linkNumber++;
-    ytplayer.addEventListener("onStateChange", "onytplayerStateChange");
+	player.playVideo();
 }
 
 // Called if the player state has changed, used to play the next link 
-function onytplayerStateChange(state) {
+function onplayerStateChange(state) {
+	state=state.data;
         if (state == 0) {
             videoPlaying = false;
-            // Set the player to load
-            ytplayer.loadVideoById(trackList[linkNumber], 1);
-            updateTrackText(trackList[linkNumber]);
             linkNumber++;
+            // Set the player to load
+            player.loadVideoById(trackList[linkNumber], 0,'large');
+            updateTrackText(trackList[linkNumber]);
         }
         if (state == 1) {
             // Set the player to load
@@ -214,18 +240,15 @@ function onytplayerStateChange(state) {
             }, function() {
                 $(this).css('background-image', "url('"+PauseButton.src+"')")
             });
-
-            videoDuration = ytplayer.getDuration();
-            console.log("Duration: " + videoDuration);
+            videoDuration = player.getDuration(); // TODO Fix duration getter
             videoPlaying = true;
         }
     }
     // Button click handlers
 $(document).ready(function() {
-	ytplayer = document.getElementById("ytplayer");
     $("#pause_button").click(function() {
         // First find if player is playing. unstarted(-1), ended (0), playing (1), paused (2), buffering (3), video cued (5).
-        var state = ytplayer.getPlayerState();
+        var state = player.getPlayerState();
         if (state == 1 || state == 3) {
             pause();
             $('#pause_button').css('background-image', "url('"+PlayButton.src+"')");
@@ -246,31 +269,36 @@ $(document).ready(function() {
         }
     });
     $("#forward_button").click(function() {
-        // First find if player is playing. unstarted(-1), ended (0), playing (1), paused (2), buffering (3), video cued (5).
         linkNumber++;
-        ytplayer.loadVideoById(trackList[linkNumber], 0);
+        player.loadVideoById(trackList[linkNumber], 0,'large');
         updateTrackText(trackList[linkNumber]);
     });
+	$("#back_button").click(function() {
+		if(linkNumber!=0) 
+			linkNumber--;			
+			player.loadVideoById(trackList[linkNumber], 0,'large');
+			updateTrackText(trackList[linkNumber]);
+    });
 	function play() {
-	  if (ytplayer) {
-		ytplayer.playVideo();
+	  if (player) {
+		player.playVideo();
 	  }
 	}
 
 	function pause() {
-	  if (ytplayer) {
-		ytplayer.pauseVideo();
+	  if (player) {
+		player.pauseVideo();
 	  }
 	}
 
 	function stop() {
-	  if (ytplayer) {
-		ytplayer.stopVideo();
+	  if (player) {
+		player.stopVideo();
 	  }
 	}
 	function loadNewVideo(id, startSeconds) {
-	  if (ytplayer) {
-		ytplayer.loadVideoById(id, startSeconds);
+	  if (player) {
+		player.loadVideoById(id, startSeconds,'large');
 	  }
 	}
 });
